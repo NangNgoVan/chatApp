@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html ng-app="ChatApp">
+<head>
+	<title>Chat</title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="assets/lib/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="assets/css/style.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+	<script src="assets/lib/bootstrap/js/bootstrap.min.js"></script>
+	<script src="assets/lib/angular/angular.min.js"></script>
+  <script src="assets/lib/angular/angular-route.min.js"></script>
+  <script src="assets/lib/angular/angular-cookies.js"></script>
+  <!-- <script src="assets/lib/ui-bootstrap/ui-bootstrap.min.js"></script> -->
+
+  <script src="app.module.js"></script>
+  <script src="app.config.js"></script>
+  <script src="components/components.module.js"></script>
+  <script src="components/user-list/user-list.module.js"></script>
+  <script src="components/user-list/user-list.component.js"></script>
+  <script src="components/auth/auth.module.js"></script>
+  <script src="components/auth/login/login.module.js"></script>
+  <script src="components/auth/login/login.component.js"></script>
+  <script src="components/auth/login/login.service.js"></script>
+  <script src="components/auth/signup/signup.module.js"></script>
+  <script src="components/auth/signup/signup.component.js"></script>
+  <script src="components/auth/signup/signup.service.js"></script>
+  <script src="components/board/board.module.js"></script>
+  <script src="components/board/board.component.js"></script>
+</head>
+<body>
+  <div ng-view></div>
+</body>
+</html>
