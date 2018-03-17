@@ -1,0 +1,26 @@
+  <div class="content">
+    <div class="contact-profile">
+      <img src="{{chatUser.avatar}}" alt="" />
+      <p>{{chatUser.name}}</p>
+      <div class="social-media">
+        <i class="fa fa-facebook" aria-hidden="true"></i>
+        <i class="fa fa-twitter" aria-hidden="true"></i>
+         <i class="fa fa-instagram" aria-hidden="true"></i>
+      </div>
+    </div>
+        <div class="messages">
+      <ul>
+        <li class="{{message.type}}" ng-repeat="message in messages">
+          <img src="{{message.avatar}}" alt="" />
+          <p>{{message.content}}</p>
+        </li>
+      </ul>
+    </div>
+    <div class="message-input">
+      <div class="wrap">
+      <input type="text" placeholder="Write your message..." ng-model="message" ng-keypress="keyPressSendMessage($event, message)"/>
+      <i class="fa fa-paperclip attachment" aria-hidden="true"></i>
+      <button class="submit" ng-click="sendMessage(message)"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+      </div>
+    </div>
+  </div>

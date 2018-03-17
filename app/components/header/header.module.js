@@ -1,2 +1,1 @@
-angular.module('header',['ngCookies',
-	'auth']);
+angular.module('header',['ngCookies']);

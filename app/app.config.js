@@ -8,15 +8,16 @@ angular.module('ChatApp')
   	  	template: '<user-list></user-list>'
   	  })
   	  .when('/login',{
-        template: '<login></login>'
+        template: '<auth></auth>'
   	  })
   	  .when('/signup',{
   	  	template: '<signup></signup>'
   	  })
       .when('/logout',{
         template: '',
-        controller: function(authService){
+        controller: function(authService, asyncService){
           authService.logOut();
+          asyncService.disconnect();
         }
       })
   	  .when('/board',{

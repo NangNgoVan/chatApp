@@ -1,3 +1,5 @@
 angular.module('components', ['ngRoute',
-	                          'auth',
-	                          'header']);
+	                          'messages',
+	                          'header',
+	                          'userList',
+	                          'async']);

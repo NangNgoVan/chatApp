@@ -1,6 +1,6 @@
 angular.module('signup')
   .component('signup', {
-  	templateUrl: 'components/auth/signup/signup.template.html',
+  	templateUrl: 'auth/signup/signup.template.html',
   	controller: function(signupService, $scope, $window){
   	  $scope.createUser = function(){
         signupService($scope.user, function(data){

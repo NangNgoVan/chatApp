@@ -1,4 +1,5 @@
 angular.module('ChatApp', ['ngRoute',
 	                       'components',
 	                       'board',
-	                       'userList']);
+	                       'auth',
+	                       'signup'])

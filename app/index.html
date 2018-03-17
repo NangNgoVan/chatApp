@@ -11,6 +11,7 @@
 	<link rel="stylesheet" type="text/css" href="css/style.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
 	<script src="lib/bootstrap/js/bootstrap.min.js"></script>
 	<script src="lib/angular/angular.min.js"></script>
   <script src="lib/angular/angular-route.min.js"></script>
@@ -20,24 +21,24 @@
   <script src="app.module.js"></script>
   <script src="app.config.js"></script>
   <script src="components/components.module.js"></script>
-  <script src="user-list/user-list.module.js"></script>
-  <script src="user-list/user-list.component.js"></script>
-  <script src="components/auth/auth.module.js"></script>
-  <script src="components/auth/auth.service.js"></script>
-  <script src="components/auth/login/login.module.js"></script>
-  <script src="components/auth/login/login.component.js"></script>
-  <script src="components/auth/login/login.service.js"></script>
-  <script src="components/auth/signup/signup.module.js"></script>
-  <script src="components/auth/signup/signup.component.js"></script>
-  <script src="components/auth/signup/signup.service.js"></script>
+  <script src="components/user-list/user-list.module.js"></script>
+  <script src="components/user-list/user-list.component.js"></script>
+  <script src="components/async/async.module.js"></script>
+  <script src="components/async/async.service.js"></script>
+  <script src="auth/auth.module.js"></script>
+  <script src="auth/auth.service.js"></script>
+  <script src="auth/auth.component.js"></script>
+  <script src="signup/signup.module.js"></script>
+  <script src="signup/signup.component.js"></script>
+  <script src="signup/signup.service.js"></script>
   <script src="components/header/header.module.js"></script>
   <script src="components/header/header.component.js"></script>
-  <script src="components/header/header.service.js"></script>
   <script src="board/board.module.js"></script>
   <script src="board/board.component.js"></script>
-  <script src="messages/messages.module.js"></script>
-  <script src="messages/messages.component.js"></script>
-  <script src="messages/messages.service.js"></script>
+  <script src="board/board.service.js"></script>
+  <script src="components/messages/messages.module.js"></script>
+  <script src="components/messages/messages.component.js"></script>
+  <script src="components/messages/messages.service.js"></script>
 </head>
 <body>
   <div ng-view></div>

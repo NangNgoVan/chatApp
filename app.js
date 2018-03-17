@@ -45,7 +45,52 @@ var errorHandle = function (req, res, next){
 };
 app.use(errorHandle);
 
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
+
+var users = []; //users online
+var sockets = []; //sockets each user
+
+io.on('connection', function (socket) {
+  console.log(socket.id + " has connected!");
+  let uid = socket.handshake.query.uid;
+  
+  if(sockets[uid] == undefined) {
+    sockets[uid] = [];
+    sockets[uid].push(socket);
+  }
+  else sockets[uid].push(socket);
+
+  socket.on('deliver_message', function(data){
+  	//console.log(data);
+  	// lưu tin nhắn vào db
+
+    // gửi cho người gửi
+    if(sockets[data.uid] != undefined) {
+      for(var i = 0; i < sockets[data.uid].length; i++){
+        sockets[data.uid][i].emit('send_message', data);
+      }
+    }
+    
+    // gửi cho người nhận nếu online trừ chính mình
+  	if(sockets[data.rid] != undefined && (data.uid != data.rid)) {
+      for(var i = 0; i < sockets[data.rid].length; i++){
+        // if(data.rid == data.uid) {
+        //   sockets[data.rid][i].emit('send_message', data);
+        //   continue;
+        // }
+  	    sockets[data.rid][i].emit('receive_message', data);
+      }
+    }
+  });
+
+  socket.on('disconnect', function(){
+  	console.log(socket.id+" has disconnected!");
+  });
+});
+
 var port = process.env.PORT || 3000;
-app.listen(port, () => {
+
+server.listen(port, () => {
   console.log('Listening on port 3000!');
 });

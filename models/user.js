@@ -5,6 +5,9 @@ var SALT_FACTOR = 10;
 
 var userSchema = mongoose.Schema({
   email: {type: String, required: true, unique: true},
+  name: {type: String},
+  avatar: {type: String},
+  preview: {type: String},
   password: {type: String, required: true},
   activate_digest: {type: String},
   digest_send_at: {type: Date},

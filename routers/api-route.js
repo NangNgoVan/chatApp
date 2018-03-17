@@ -63,7 +63,8 @@ router.post('/api/auth/login', function(req, res, next){
           var token = jwt.sign(tokenData, process.env.SECRET_TOKEN_STRING);
           res.json({
             success: true,
-            token: token
+            token: token,
+            uid: user._id
           });
         }
         else return res.json({success: false, message: "Sai mật khẩu"});

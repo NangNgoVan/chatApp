@@ -1,17 +1,15 @@
 angular.module('board')
   .component('board',{
   	templateUrl: 'board/board.template.html',
-  	controller: function(authService, $window, $scope, $rootScope){
-
-      if(!authService.loggedIn()) $window.location.href = '#!/login'
+  	controller: function(authService, boardService, $window, $scope, $rootScope){
+      if(authService.token == null) {$window.location.href = '#!/login'}
       else{
-        // lấy dữ liệu của người dùng hiện tại và hiển thị
+        //asyncService.connect(authService.uid, authService.token); // đồng bộ.
         $scope.user = {};
-        authService.getUser(function(data){
-          $scope.user = data
-          $rootScope.$broadcast('logged', data);
+        $scope.user = boardService.currentUser(authService.token, function(udata){
+          $scope.user = udata;
+          $rootScope.$broadcast('logged_in', udata);
         });
       };
-
   	}
   });

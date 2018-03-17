@@ -1,4 +1,1 @@
-angular.module('board', ['ngRoute',
-	'auth',
-	'userList',
-	'messages']);
+angular.module('board', ['ngRoute']);
