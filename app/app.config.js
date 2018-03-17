@@ -15,10 +15,8 @@ angular.module('ChatApp')
   	  })
       .when('/logout',{
         template: '',
-        controller: function($cookies, $window){
-          //alert('hello');
-          $cookies.remove('token');
-          $window.location.href = '#!login';
+        controller: function(authService){
+          authService.logOut();
         }
       })
   	  .when('/board',{

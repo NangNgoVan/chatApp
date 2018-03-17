@@ -1,1 +1,4 @@
-angular.module('auth',['ngRoute', 'login', 'signup']);
+angular.module('auth',['ngRoute',
+	'ngCookies',
+	'login',
+	'signup']);

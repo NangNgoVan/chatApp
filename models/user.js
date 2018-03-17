@@ -8,7 +8,8 @@ var userSchema = mongoose.Schema({
   password: {type: String, required: true},
   activate_digest: {type: String},
   digest_send_at: {type: Date},
-  createAt: {type: Date, default: Date.now},
+  activated: {default: false},
+  createAt: {type: Date, default: Date.now}
 });
 
 var noop = function(){};

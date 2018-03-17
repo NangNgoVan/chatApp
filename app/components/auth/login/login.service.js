@@ -1,6 +1,6 @@
 angular.module('login')
-  .factory('tokenService', ['$http', function($http){
-    return function(data, callback){
+  .service('loginService', ['$http', function($http){
+    this.logIn = function(data, callback){
       $http.post('/api/auth/login', data, 'contenttype').then(function(res){
       	//alert('thành công');
       	return callback(res.data);

@@ -19,13 +19,18 @@ app.use(session({
 
 var mongoose = require('mongoose');
 var dbStr = 'mongodb://'+process.env.DB_USER+':'+process.env.DB_PASSWORD+'@'+process.env.DB_HOST;
+
 mongoose.connect(dbStr);
 mongoose.Promise = global.Promise;
+
 var db = mongoose.connection;
+
 db.on('error', console.error.bind(console, 'Connect error!'));
 db.once('open', function(){console.log('Connect success!')});
 
 var apiRoutes = require('./routers/api-route');
+
+app.use(express.static(path.join(__dirname,'public')));
 
 app.use(express.static(path.join(__dirname,'app')));
 

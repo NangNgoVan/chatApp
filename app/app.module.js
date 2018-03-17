@@ -1,1 +1,4 @@
-angular.module('ChatApp', ['ngRoute', 'components']);
+angular.module('ChatApp', ['ngRoute',
+	                       'components',
+	                       'board',
+	                       'userList']);

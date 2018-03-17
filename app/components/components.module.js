@@ -1,1 +1,3 @@
-angular.module('components', ['ngRoute', 'auth', 'board', 'userList']);
+angular.module('components', ['ngRoute',
+	                          'auth',
+	                          'header']);
