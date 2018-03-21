@@ -2,26 +2,13 @@ angular.module('messages')
   .component('messages', {
   	templateUrl: 'components/messages/messages.template.html',
   	controller: function($scope, messageService, authService, asyncService){
-      $scope.messages = [
-        // {
-        //   type: 'send',
-        //   avatar: 'http://emilcarlsson.se/assets/mikeross.png',
-        //   content: 'How the hell am I supposed to get a jury to believe you when I am not even sure that I do?!'
-        // },
-        // {
-        //   type: 'replies',
-        //   avatar: 'http://emilcarlsson.se/assets/harveyspecter.png',
-        //   content: "When you're backed against the wall, break the god damn thing down.",
-        // },
-        // {
-        // 	type: 'send',
-        // 	avatar: 'http://emilcarlsson.se/assets/harveyspecter.png',
-        // 	content: 'Oh yeah, did Michael Jordan tell you that?'
-        // }
-      ];
+      $scope.messages = [];
+
+      $scope.unread_messages = []; // id của các tin nhắn chưa đọc.
 
       $scope.message = '';
-      $scope.chatUser = null;
+      $scope.currentChatUser = null;
+      $scope.uid = authService.uid;
 
       $scope.sendMessage = function(msg){
       	//alert(msg);
@@ -30,56 +17,40 @@ angular.module('messages')
           //
           return;
         }
-        if($scope.chatUser == null) return;
-
+        if($scope.currentChatUser == null) return;
+        //console.log($scope.currentChatUser.uid);
         asyncService.emit('deliver_message', {uid: authService.uid,
-          rid: $scope.chatUser._id, msg: msg});
+          rid: $scope.currentChatUser._id, msg: msg});
 
-        // $scope.messages.push({
-        //   type: 'replies',
-        //   avatar:  'http://emilcarlsson.se/assets/harveyspecter.png',
-        //   content: msg
-        // });
       	$scope.message = '';
       }
 
       $scope.keyPressSendMessage = function($event, msg){
       	var keyCode = $event.which || $event.keyCode;
       	if(keyCode == 13){
+          $scope.seenEvent();
       	  $scope.sendMessage(msg);
       	}
       }
 
+      // đã xem khi nhập tin nhắn
+      $scope.seenEvent = function(){
+        //console.log('bắt đầu gửi trạng thái!');
+        asyncService.emit('deliver_seen_event',
+          {uid: authService.uid, rid: $scope.currentChatUser._id});
+      }
+
       // tải tin nhắn
-      $scope.$on('loadMessage', function(events, args){
-        $scope.chatUser = args;
-      	$scope.messages = messageService.loadMessages(args._id);
+      $scope.$on('loadMessages', function(events, args){
+        $scope.currentChatUser = args.user;
+        $scope.messages = args.messages;
+        // $scope.messages.find(x=>{
+        //   if(x.status == 'saved') $scope.unread_messages.push(x._id);
+        // })
       });
-      
-      // kết nối lỗi
-      asyncService.on('connect_error', function(error){
-        console.log(error);
-      });
-      
-      // nhận một tin nhắn mới
-      asyncService.on('receive_message', function(data){
-        $scope.messages.push({
-          type:'sent',
-          avatar: 'http://emilcarlsson.se/assets/harveyspecter.png',
-          content: data.msg
-        });
-        $scope.$apply();
-      });
-      
-      // khi gửi tin nhắn thành công!
-      asyncService.on('send_message', function(data){
-        // 
-        $scope.messages.push({
-          type:'replies',
-          avatar: 'http://emilcarlsson.se/assets/harveyspecter.png',
-          content: data.msg
-        });
-        $scope.$apply();
+
+      $scope.$on('logged_in', function(){
+        asyncService.reconnect();
       });
   	}
   });

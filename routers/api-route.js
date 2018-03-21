@@ -3,8 +3,9 @@ var path = require('path');
 var router = express.Router();
 
 var User = require('../models/user');
+var Message = require('../models/message');
 
-var jwt = require('jsonwebtoken');
+var Jwt = require('../helper/jwt.js');
 
 var options = {
   root: '',
@@ -16,6 +17,34 @@ router.use(function(req, res, next){
   next();
 });
 
+// tải tin nhắn
+router.get('/api/messages/:rid', function(req, res){
+  var token = req.headers.token;
+  var rid = req.params.rid;
+  if(!token) return res.json({success: false, msg: 'token không hợp lệ!'});
+  if(!rid) return res.json({success: false, msg: 'rid không hợp lệ!'});
+  {
+    Jwt.checkToken(token, function(data){
+      if(data.success){
+        var uid = data.data._id;
+        Message.find({
+          $or:[
+            {$and: [{sid: uid}, {rid: rid}]},
+            {$and: [{sid: rid}, {rid: uid}]}
+          ]
+        }, function(err, messages){
+          if(err) return res.json({success: false, msg: "Đã xảy ra lỗi!"});
+          res.json({success:true, messages: messages});
+        })
+      }
+      else{
+        // lỗi xác thực
+        res.json({success: false, msg: 'token không hợp lệ'});
+      }
+    });
+  }
+});
+
 // get all users
 router.get('/api/users', function(req, res){
   User.find({}, function(err, users){
@@ -23,23 +52,24 @@ router.get('/api/users', function(req, res){
   });
 });
   
-// get a user
+// get a user auth
 router.get('/api/user', function(req, res){
   var token = req.headers.token;
-  if(token){
-    jwt.verify(token, process.env.SECRET_TOKEN_STRING, function(err, decoded){
-      if(err){
-        res.json({success: false, message: err.message});
-      }
+  Jwt.checkToken(token, function(data){
+    res.json(data);
+  });
+});
 
-      var user = User.findOne({email: decoded.data.email}, function(err, user){
-        if(err) res.json({success: false, message: "Lỗi chưa xác định!"});
-        res.json({success: true, data: user});
-      });
-    })
-  }
+router.get('/api/user/:uid', function(req, res){
+  var uid = req.params.uid;
+  
+  if(uid == undefined) res.json({success: false, message: "Id không hợp lệ!"})
   else {
-    res.json({success: false, message: "token không hợp lệ"});
+    User.findById(uid, function(err, user){
+      if(err) res.json({success: false, message: "Lỗi nội bộ! ("+err+")"})
+      else if(!user) res.json({success: false, message: "Không tồn tại!"})
+      else res.json({success: true, data: {name: user.name, avatar: user.avatar}});
+    });
   }
 });
 
@@ -60,7 +90,7 @@ router.post('/api/auth/login', function(req, res, next){
             exp: Math.floor(Date.now() / 1000) + 3600,
             data: user
           }
-          var token = jwt.sign(tokenData, process.env.SECRET_TOKEN_STRING);
+          var token = Jwt.sign(tokenData, process.env.SECRET_TOKEN_STRING);
           res.json({
             success: true,
             token: token,
@@ -98,8 +128,6 @@ router.post('/api/auth/signup', function(req, res, next){
       res.json({success: true, message: 'Lưu thành công!', data: userSaved});
     });
   });  
-
-  //res.redirect('/');
 });
 
 module.exports = router;

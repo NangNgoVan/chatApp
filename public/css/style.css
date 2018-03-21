@@ -668,4 +668,10 @@ body {
   outline: none;
 }
 
-/**/
+/*toast*/
+.md-toast.success {
+  background-color: aqua;
+}
+.md-toast.error {
+  background-color: #e74c3c;
+}

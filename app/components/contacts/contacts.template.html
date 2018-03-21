@@ -1,16 +1,16 @@
     <div id="search">
       <label for=""><i class="fa fa-search" aria-hidden="true"></i></label>
-      <input type="text" placeholder="Search contacts..." />
+      <input type="text" placeholder="Tìm liên hệ..." ng-model="searchContact"/>
     </div>
     <div id="contacts">
       <ul>
-        <li class="contact" ng-repeat="user in users" ng-click="loadMessages(user)">
+        <li class="contact {{user.active? 'active':''}}" ng-repeat="user in users | filter: searchContact" ng-click="load(user)">
           <div class="wrap">
-            <span class="contact-status {{user.status}}"></span>
-            <img src="{{user.avatar}}" alt="" />
+            <span class="contact-status {{user.online?'online':'busy'}}"></span>
+            <img src="{{user.user.avatar}}" alt="" />
             <div class="meta">
-              <p class="name">{{user.name}}</p>
-              <p class="preview">{{user.preview}}</p>
+              <p class="name">{{user.user.name}} ({{unreadMessages(user).length}})</p>
+              <p class="preview">{{(user.user.messages.length > 0)?user.user.messages[0]:''}}</p>
             </div>
           </div>
         </li>

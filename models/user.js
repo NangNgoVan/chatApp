@@ -4,15 +4,15 @@ var bcrypt = require('bcrypt-nodejs');
 var SALT_FACTOR = 10;
 
 var userSchema = mongoose.Schema({
-  email: {type: String, required: true, unique: true},
-  name: {type: String},
-  avatar: {type: String},
-  preview: {type: String},
-  password: {type: String, required: true},
-  activate_digest: {type: String},
-  digest_send_at: {type: Date},
-  activated: {default: false},
-  createAt: {type: Date, default: Date.now}
+  email: {type: String, required: true, unique: true}, // tên tài khoản
+  name: {type: String},  // tên đầy đủ
+  avatar: {type: String}, // ảnh đại diện
+  password: {type: String, required: true}, // mật khẩu
+  activate_digest: {type: String}, // mã kích hoạt
+  digest_send_at: {type: Date}, // ngày gửi mã kích hoạt
+  activated: {default: false}, // đã kích hoạt
+  contacts:{type: String}, // danh sách liên hệ
+  createAt: {type: Date, default: Date.now} // ngày tạo tài khoản
 });
 
 var noop = function(){};
@@ -35,6 +35,14 @@ userSchema.methods.checkPassword = function(pass, done){
   	done(err, isMatch);
   });
 };
+
+// tải danh bạ
+userSchema.statics.loadContacts = function(uid, done){
+  var contacts = [];
+  // ...
+  // contacts = Messages.countUnreadMessage(contacts);
+  // ...
+}
 
 var User = mongoose.model('User', userSchema);
 

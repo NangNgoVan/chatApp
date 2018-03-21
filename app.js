@@ -18,7 +18,10 @@ app.use(session({
 }));
 
 var mongoose = require('mongoose');
-var dbStr = 'mongodb://'+process.env.DB_USER+':'+process.env.DB_PASSWORD+'@'+process.env.DB_HOST;
+var dbStr = 'mongodb://'+
+  process.env.DB_USER+':'+
+  process.env.DB_PASSWORD+'@'+
+  process.env.DB_HOST;
 
 mongoose.connect(dbStr);
 mongoose.Promise = global.Promise;
@@ -41,56 +44,113 @@ app.get('/', function(req, res){
 app.use(apiRoutes);
 
 var errorHandle = function (req, res, next){
+  //console.log(req);
   res.sendFile('error.html', {root: path.join('views')});
 };
 app.use(errorHandle);
 
-var server = require('http').Server(app);
+var http = require('http');
+var server = http.Server(app);
 var io = require('socket.io')(server);
+
+var Message = require('./models/message');
 
 var users = []; //users online
 var sockets = []; //sockets each user
+//var usersInfos = []; // users infos
 
 io.on('connection', function (socket) {
   console.log(socket.id + " has connected!");
   let uid = socket.handshake.query.uid;
+  //console.log(uid);
+
+  users[socket.id] = uid;
+  sockets[socket.id] = socket;
+
+  // người dùng online
+  // nếu đã có trong users, gửi [uid]
+  // nếu online lần đầu tiên, gửi tất cả
   
-  if(sockets[uid] == undefined) {
-    sockets[uid] = [];
-    sockets[uid].push(socket);
-  }
-  else sockets[uid].push(socket);
+  socket.broadcast.emit('user_online', [uid]);
+
+   var usersOnline = [];
+
+    for(item in users){
+      var found = usersOnline.find(x=>{
+        if(x === users[item]) return true;
+      });
+      if(!found) usersOnline.push(users[item]);
+    }
+
+  io.sockets.emit('user_online', usersOnline);
+  //console.log(usersOnline);
 
   socket.on('deliver_message', function(data){
-  	//console.log(data);
+    console.log(data);
   	// lưu tin nhắn vào db
-
-    // gửi cho người gửi
-    if(sockets[data.uid] != undefined) {
-      for(var i = 0; i < sockets[data.uid].length; i++){
-        sockets[data.uid][i].emit('send_message', data);
+    Message.saveMessage(data, function(msg){
+      console.log(msg);
+      if(!msg.success){
+        // lỗi ko luu dc
+        console.log(msg.msg);
       }
-    }
-    
-    // gửi cho người nhận nếu online trừ chính mình
-  	if(sockets[data.rid] != undefined && (data.uid != data.rid)) {
-      for(var i = 0; i < sockets[data.rid].length; i++){
-        // if(data.rid == data.uid) {
-        //   sockets[data.rid][i].emit('send_message', data);
-        //   continue;
-        // }
-  	    sockets[data.rid][i].emit('receive_message', data);
+      else {
+        for(x in users){
+          // người gửi
+          if(users[x] == data.uid){
+            sockets[x].emit('send_message', msg.data);
+          }
+          else if(users[x] == data.rid && data.uid != data.rid){
+            sockets[x].emit('receive_message', msg.data);
+          }
+        }
+      };
+    });
+  });
+
+  socket.on('deliver_seen_event', function(data){
+    // cập nhật trạng thái tin nhắn trên db.
+    //
+    for(x in users){
+      if((users[x] == data.rid && data.uid != data.rid)){
+        sockets[x].emit('seen_event', data.uid);
+      }
+      if(users[x] == data.uid){
+        sockets[x].emit('seen_event', data.rid);
       }
     }
   });
+
 
   socket.on('disconnect', function(){
   	console.log(socket.id+" has disconnected!");
+
+    var uid = users[socket.id];
+
+    delete users[socket.id];
+    delete sockets[socket.id];
+    
+    var found = false;
+    found = users.find(function(x){
+      if(x == uid) return true;
+    });
+    if(!found){
+      //console.log(usersInfos[uid]);
+      io.sockets.emit('user_offline', [uid]);
+    }
   });
 });
 
-var port = process.env.PORT || 3000;
+server.sendNotifications = function(uid, notifications){
+  var socketID = null;
+  for(x in users){
+    if(users[x] == uid){
+      socketID = x;
+      return;
+    }
+  }
+  if(socketID != null)
+    sockets[socketID].emit('notifications', notifications);
+}
 
-server.listen(port, () => {
-  console.log('Listening on port 3000!');
-});
+module.exports = server;

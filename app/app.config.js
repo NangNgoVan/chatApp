@@ -4,9 +4,6 @@ angular.module('ChatApp')
   	  $locationProvider.hashPrefix('!');
 
   	  $routeProvider
-  	  .when('/users',{
-  	  	template: '<user-list></user-list>'
-  	  })
   	  .when('/login',{
         template: '<auth></auth>'
   	  })
@@ -17,7 +14,7 @@ angular.module('ChatApp')
         template: '',
         controller: function(authService, asyncService){
           authService.logOut();
-          asyncService.disconnect();
+          asyncService.close();
         }
       })
   	  .when('/board',{

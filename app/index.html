@@ -8,7 +8,8 @@
   <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700,300' rel='stylesheet' type='text/css'>
   <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css'>
   <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.2/css/font-awesome.min.css'>
-	<link rel="stylesheet" type="text/css" href="css/style.css">
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.css">
+  <link rel="stylesheet" type="text/css" href="css/style.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
@@ -16,15 +17,19 @@
 	<script src="lib/angular/angular.min.js"></script>
   <script src="lib/angular/angular-route.min.js"></script>
   <script src="lib/angular/angular-cookies.js"></script>
-  <!-- <script src="lib/ui-bootstrap/ui-bootstrap.min.js"></script> -->
-
+  <script src="lib/angular/angular-animate.min.js"></script>
+  <script src="lib/angular/angular-aria.min.js"></script>
+  <script src="lib/angular/angular-messages.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.js">
+  </script>
   <script src="app.module.js"></script>
   <script src="app.config.js"></script>
-  <script src="components/components.module.js"></script>
-  <script src="components/user-list/user-list.module.js"></script>
-  <script src="components/user-list/user-list.component.js"></script>
   <script src="components/async/async.module.js"></script>
   <script src="components/async/async.service.js"></script>
+  <script src="components/contacts/contacts.module.js"></script>
+  <script src="components/contacts/contacts.component.js"></script>
+  <script src="components/contacts/contacts.service.js"></script>
+  <script src="components/components.module.js"></script>
   <script src="auth/auth.module.js"></script>
   <script src="auth/auth.service.js"></script>
   <script src="auth/auth.component.js"></script>
@@ -35,10 +40,14 @@
   <script src="components/header/header.component.js"></script>
   <script src="board/board.module.js"></script>
   <script src="board/board.component.js"></script>
+  <script src="board/board.controller.js"></script>
   <script src="board/board.service.js"></script>
   <script src="components/messages/messages.module.js"></script>
   <script src="components/messages/messages.component.js"></script>
   <script src="components/messages/messages.service.js"></script>
+  <script src="users/users.module.js"></script>
+  <script src="users/users.component.js"></script>
+  <script src="users/users.service.js"></script>
 </head>
 <body>
   <div ng-view></div>

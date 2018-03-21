@@ -1,10 +1,16 @@
 angular.module('async')
-  .service('asyncService', ['authService', function(authService){
+  .factory('asyncService', ['authService', function(authService){
   	// connect socket.
     var token = authService.token;
     var uid = authService.uid;
-  	var socket = io.connect('http://localhost:3000?uid='+uid
+    //var url = 'http://localhost:3000';
+    var url = 'https://glacial-anchorage-67038.herokuapp.com'
+  	var socket = io.connect(url+'?uid='+uid
       + '&&token=' + token);
+    
+  	socket.reconnect = function(){
+  	  socket.open();
+  	}
 
     return socket;
 
