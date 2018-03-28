@@ -11,7 +11,7 @@ var userSchema = mongoose.Schema({
   activate_digest: {type: String}, // mã kích hoạt
   digest_send_at: {type: Date}, // ngày gửi mã kích hoạt
   activated: {default: false}, // đã kích hoạt
-  contacts:{type: String}, // danh sách liên hệ
+  contacts:{type: Object}, // danh sách liên hệ
   createAt: {type: Date, default: Date.now} // ngày tạo tài khoản
 });
 
@@ -36,12 +36,15 @@ userSchema.methods.checkPassword = function(pass, done){
   });
 };
 
-// tải danh bạ
-userSchema.statics.loadContacts = function(uid, done){
+// tải danh sách người dùng từ ids
+userSchema.statics.loadContacts = function(uids, done){
   var contacts = [];
-  // ...
-  // contacts = Messages.countUnreadMessage(contacts);
-  // ...
+  User.find({
+    _id: {$in: uids}
+  }, function(err, users){
+    if(err) return done({success: false, msg: "Đã xảy ra lỗi!"})
+    return done({success: true, users: users});
+  });
 }
 
 var User = mongoose.model('User', userSchema);

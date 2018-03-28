@@ -3,9 +3,7 @@ angular.module('messages')
   	templateUrl: 'components/messages/messages.template.html',
   	controller: function($scope, messageService, authService, asyncService){
       $scope.messages = [];
-
       $scope.unread_messages = []; // id của các tin nhắn chưa đọc.
-
       $scope.message = '';
       $scope.currentChatUser = null;
       $scope.uid = authService.uid;
@@ -42,11 +40,9 @@ angular.module('messages')
 
       // tải tin nhắn
       $scope.$on('loadMessages', function(events, args){
-        $scope.currentChatUser = args.user;
+        $scope.currentChatUser = args;
         $scope.messages = args.messages;
-        // $scope.messages.find(x=>{
-        //   if(x.status == 'saved') $scope.unread_messages.push(x._id);
-        // })
+        console.log(args);
       });
 
       $scope.$on('logged_in', function(){

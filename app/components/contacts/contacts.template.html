@@ -7,10 +7,10 @@
         <li class="contact {{user.active? 'active':''}}" ng-repeat="user in users | filter: searchContact" ng-click="load(user)">
           <div class="wrap">
             <span class="contact-status {{user.online?'online':'busy'}}"></span>
-            <img src="{{user.user.avatar}}" alt="" />
+            <img src="{{user.avatar}}" alt="" />
             <div class="meta">
-              <p class="name">{{user.user.name}} ({{unreadMessages(user).length}})</p>
-              <p class="preview">{{(user.user.messages.length > 0)?user.user.messages[0]:''}}</p>
+              <p class="name">{{user.name}} (0)</p>
+              <p class="preview">{{user.preview}}</p>
             </div>
           </div>
         </li>

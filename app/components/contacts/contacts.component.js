@@ -4,26 +4,11 @@ angular.module('contactsList')
     controller: function (asyncService, contactService, $mdToast, $http, $scope, $rootScope, $q) {
       var self = this;
 
-      $scope.users = []; // người dùng
+      $scope.users = []; // người dùng trong danh bạ
 
       $scope.currentChatUser = null; // người chat hiện tại.
 
       $scope.contactsOnline = []; // danh bạ
-
-      this.loadUsers = function(uid){
-        return contactService.loadUsers(uid).then((data) => {
-          console.log(data);
-          $scope.users = data;
-          if($scope.users.length > 0) {
-            $scope.currentChatUser = $scope.users[0];
-            $scope.load($scope.currentChatUser);
-          }
-          //console.log($scope.users);
-          self.showContactsOnline(true);
-        }).catch((err)=>{
-          // xảy ra lỗi.
-        });
-      }
 
       $scope.load = function(currentChatUser){
         if($scope.currentChatUser != null)
@@ -31,7 +16,7 @@ angular.module('contactsList')
         $scope.currentChatUser = currentChatUser;
         $scope.currentChatUser.active = true;
 
-        contactService.loadMessages($scope.currentChatUser.user._id)
+        contactService.loadMessages($scope.currentChatUser._id)
           .then(function(data){
             $scope.currentChatUser.messages = data;
             $rootScope.$broadcast('loadMessages', $scope.currentChatUser);
@@ -44,7 +29,7 @@ angular.module('contactsList')
         //console.log(data);
         for(x in $scope.users){
           // chuyển các tin nhắn ở trạng thái read sang seen
-          if($scope.users[x].user._id == data.sid){
+          if($scope.users[x]._id == data.sid){
             $scope.users[x].messages.push(data);
           }
         }
@@ -56,7 +41,7 @@ angular.module('contactsList')
       asyncService.on('send_message', function(data){
         //console.log(data);
         for(x in $scope.users){
-          if($scope.users[x].user._id == data.rid){
+          if($scope.users[x]._id == data.rid){
             $scope.users[x].messages.push(data);
           };
         }
@@ -68,14 +53,7 @@ angular.module('contactsList')
         //alert(uid + ' Đã đọc!');
         // chuyển các tin nhắn ở trạng thái sent sang read.
         for(x in $scope.users){
-          // if($scope.users[x].user._id == uid){
-          //   for(mIndex in $scope.users[x].messages){
-          //     var message = $scope.users[x].messages[mIndex];
-          //     if(message.status == 'sent'){
-          //       message.status = 'read';
-          //     }
-          //   };
-          // }
+
         }
         $scope.$apply();
       });
@@ -89,7 +67,7 @@ angular.module('contactsList')
           controller : function($scope){
             $scope.msg = "Lỗi kết nối! Đang chờ mạng."
           },
-          templateUrl : 'components/toast/toast.template.html'
+          template : '<md-toast><span class="md-toast-text" flex>{{msg}}</span></md-toast'
         });
       });
 
@@ -102,7 +80,7 @@ angular.module('contactsList')
           controller : function($scope){
             $scope.msg = "Kết nối thành công!"
           },
-          templateUrl : 'components/toast/toast.template.html'
+          template : '<md-toast><span class="md-toast-text" flex>{{msg}}</span></md-toast'
         })
       });
 
@@ -132,20 +110,25 @@ angular.module('contactsList')
       });
 
       // tin nhắn chưa đọc.
-      $scope.unreadMessages = function(currentChatUser){
-        var unread_messages = [];
-        currentChatUser.messages.find(x=>{
-          if(x.status === 'saved') unread_messages.push(x._id);
-        });
-        return unread_messages;
-      }
+      $scope.unread_messages = 0;
+      // $scope.unreadMessages = function(currentChatUser){
+      //   var unread_messages = [];
+      //   currentChatUser.messages.find(x=>{
+      //     if(x.status === 'saved') unread_messages.push(x._id);
+      //   });
+      //   return unread_messages;
+      // }
 
       // đếm tin nhắn chờ của tất cả các liên hệ.
       //
 
       this.loadContacts = function(){
         // tải liên hệ
-        $scope.users = contactService.loadContacts();
+        contactService.loadContacts().then(function(contacts){
+          $scope.users = contacts;
+          console.log($scope.users.length);
+          if($scope.users.length > 0) $scope.load($scope.users[0]);
+        });
       }
 
       this.showContactsOnline = function(status){
@@ -153,7 +136,7 @@ angular.module('contactsList')
         for(i in $scope.users){
           var found = false;
           found = $scope.contactsOnline.find(x=>{
-            if(x === $scope.users[i].user._id) return true;
+            if(x === $scope.users[i]._id) return true;
           });
           if(found) $scope.users[i].online = status;
           else $scope.users[i].online = !status;
@@ -161,8 +144,7 @@ angular.module('contactsList')
       }
 
       this.$onInit = function(){
-        this.loadUsers('current');  //
+        this.loadContacts();  //
       }
-      //
     }
   });

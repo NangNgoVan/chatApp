@@ -73,6 +73,24 @@ router.get('/api/user/:uid', function(req, res){
   }
 });
 
+router.get('/api/contacts', function(req, res){
+  var token = req.headers.token;
+  Jwt.checkToken(token, function(data){
+    if(data.success){
+      var user = data.data;
+      var contactIds = user.contacts; // danh sách liên hệ
+      //res.json(contactIds);
+      User.loadContacts(contactIds, function(contacts){
+        if(contacts.success){
+          res.json(contacts);
+        }
+        else res.json({success: false, msg: contacts.msg});
+      });
+    }
+    else res.json({success: false, msg: "Token không hợp lệ"});
+  });
+});
+
 router.post('/api/auth/login', function(req, res, next){
   var email = req.body.email;
   var password = req.body.password;
